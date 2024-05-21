@@ -14,7 +14,7 @@ const SearchBox = () => {
       const newTimer = setTimeout(() => {
         axios.post('http://localhost:3000/search_queries', { query })
           .catch(error => console.error('Error logging search query:', error));
-      }, 500);
+      }, 500); // debounce time
       setTimer(newTimer);
     }
   }, [query]);
