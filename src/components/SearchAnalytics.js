@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../App.css'
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://search-analytics-backend-r.onrender.com';
+
 const SearchAnalytics = () => {
   const [analytics, setAnalytics] = useState([]);
   const [error, setError] = useState('');
@@ -9,7 +11,7 @@ const SearchAnalytics = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/search_queries');
+        const response = await axios.get(`${API_BASE_URL}/search_queries`);  // Use environment variable
         setAnalytics(response.data);
       } catch (error) {
         console.error('Error fetching search analytics:', error);
