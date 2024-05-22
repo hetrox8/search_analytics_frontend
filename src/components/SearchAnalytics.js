@@ -1,22 +1,35 @@
-// src/components/SearchAnalytics.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../App.css'
 
 const SearchAnalytics = () => {
-  const [analytics, setAnalytics] = useState();
+  const [analytics, setAnalytics] = useState([]);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3000/search_queries')
-      .then(response => setAnalytics(response.data))
-      .catch(error => console.error('Error fetching search analytics:', error));
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/search_queries');
+        setAnalytics(response.data);
+      } catch (error) {
+        console.error('Error fetching search analytics:', error);
+        setError('Error fetching search analytics');
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
-    <div>
+    <div className="searchAnalytics">
       <h2>Search Analytics</h2>
-      <ul>
-        {analytics && analytics.map((query, count) => (
-          <li key={count}>{query.query}: {query.ip_address}</li>
+      {error && <p className="error">{error}</p>}
+      <ul className="analyticsList">
+        {analytics.map((query, index) => (
+          <li key={index} className="analyticsItem">
+            <span className="query">{query.query}</span>:
+            <span className="ipAddress">{query.ip_address}</span>
+          </li>
         ))}
       </ul>
     </div>

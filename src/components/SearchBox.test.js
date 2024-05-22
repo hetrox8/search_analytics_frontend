@@ -1,23 +1,55 @@
-// src/components/SearchBox.test.js
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import SearchBox from './SearchBox';
+import SearchAnalytics from './SearchAnalytics';
 
 jest.mock('axios');
 
-test('renders search box', () => {
-  const { getByPlaceholderText } = render(<SearchBox />);
-  expect(getByPlaceholderText('Search for articles...')).toBeInTheDocument();
-});
+describe('SearchAnalytics Component', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-test('sends query to the backend', async () => {
-  axios.post.mockResolvedValue({ status: 200 });
-  const { getByPlaceholderText } = render(<SearchBox />);
-  const input = getByPlaceholderText('Search for articles...');
+  test('renders search trends', async () => {
+    // Mock data for trends
+    const mockData = [
+      { query: 'test query 1' },
+      { query: 'test query 2' },
+    ];
 
-  fireEvent.change(input, { target: { value: 'test query' } });
-  await new Promise(resolve => setTimeout(resolve, 600));  // Wait for debounce
+    // Mock axios.get to return mockData
+    axios.get.mockResolvedValueOnce({ data: mockData });
 
-  expect(axios.post).toHaveBeenCalledWith('http://localhost:3000/search_queries', { query: 'test query' });
+    // Render the component
+    render(<SearchAnalytics />);
+
+    // Wait for the component to render with the mocked data
+    await waitFor(() => {
+      mockData.forEach((item) => {
+        expect(document.body).toHaveTextContent(item.query);
+      });
+    });
+
+    // Verify the API call
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledWith('/search-analytics');
+  });
+
+  test('handles API error', async () => {
+    // Mock error for API call
+    const errorMessage = 'API error';
+    axios.get.mockRejectedValueOnce(new Error(errorMessage));
+
+    // Render the component
+    render(<SearchAnalytics />);
+
+    // Wait for the component to handle the error
+    await waitFor(() => {
+      expect(document.body).toHaveTextContent(`Error fetching data: ${errorMessage}`);
+    });
+
+    // Verify the API call
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledWith('/search-analytics');
+  });
 });

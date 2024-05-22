@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import './App.css';
 import SearchBox from './components/SearchBox';
@@ -8,10 +7,12 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Search Analytics</h1>
+        <h1>Search Analytics Dashboard</h1>
+      </header>
+      <main>
         <SearchBox />
         <SearchAnalytics />
-      </header>
+      </main>
     </div>
   );
 }

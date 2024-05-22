@@ -1,6 +1,6 @@
-// src/components/SearchBox.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import '../App.css'; // Import global styles
 
 const SearchBox = () => {
   const [query, setQuery] = useState('');
@@ -17,14 +17,15 @@ const SearchBox = () => {
       }, 500); // debounce time
       setTimer(newTimer);
     }
-  }, [query]);
+  }, [query, timer]);
 
   return (
     <input
       type="text"
       value={query}
-      onChange={e => setQuery(e.target.value)}
+      onChange={(e) => setQuery(e.target.value)}
       placeholder="Search for articles..."
+      className="searchInput" // Apply global CSS class
     />
   );
 };
