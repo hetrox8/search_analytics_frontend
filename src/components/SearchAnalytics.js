@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const SearchAnalytics = () => {
-  const [analytics, setAnalytics] = useState([]);
+  const [analytics, setAnalytics] = useState();
 
   useEffect(() => {
     axios.get('http://localhost:3000/search_queries')
@@ -15,8 +15,8 @@ const SearchAnalytics = () => {
     <div>
       <h2>Search Analytics</h2>
       <ul>
-        {Object.entries(analytics).map(([query, count]) => (
-          <li key={query}>{query}: {count}</li>
+        {analytics && analytics.map((query, count) => (
+          <li key={count}>{query.query}: {query.ip_address}</li>
         ))}
       </ul>
     </div>
